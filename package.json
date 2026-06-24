@@ -1,0 +1,13 @@
+{
+  "name": "resource-allocation-cds",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@sap/cds-dk": "^9.7.2"
+  },
+  "sapux": [
+    "app/resourceallocation",
+    "app/resourceallocation",
+    "app/employees",
+    "app/projects"
+  ]
+}

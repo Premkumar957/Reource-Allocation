@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+        window['sap-ushell-config'] = {
+            defaultRenderer: 'fiori2',
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
+                    }
+                }
+            },
+            applications: {
+                // "nsresourcesmaster-tile": {
+                //     title: 'Resource Types',
+                //     description: 'An SAP Fiori application.',
+                //     icon: "sap-icon://s4hana",
+                //     additionalInformation: 'SAPUI5.Component=ns.resourcetypes',
+                //     applicationType: 'URL',
+                //     url: "./resource-types/webapp",
+                //     navigationMode: 'embedded'
+                // },
+                "nsresourceallocation-tile": {
+                    title: 'Resource Allocation',
+                    description: 'Define and manage Resource Allocation.',
+                    additionalInformation: 'SAPUI5.Component=com.company.project.resourceallocation',
+                    applicationType: 'URL',
+                    url: "./resourceallocation/webapp",
+                    navigationMode: 'embedded'
+                },
+                "nsprojects-tile": {
+                    title: 'Projects',
+                    description: 'Define and manage Projects.',
+                    additionalInformation: 'SAPUI5.Component=com.company.project.projects',
+                    applicationType: 'URL',
+                    url: "./projects/webapp",
+                    navigationMode: 'embedded'
+                },
+                "nsemployees-tile": {
+                    title: 'Employees',
+                    description: 'Define and manage Employees.',
+                    additionalInformation: 'SAPUI5.Component=com.company.project.employees',
+                    applicationType: 'URL',
+                    url: "./employees/webapp",
+                    navigationMode: 'embedded'
+                },
+
+            }
+        }
+    </script>
+    <script src="https://ui5.sap.com/1.143.1/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+    <script src="https://ui5.sap.com/1.143.1/resources/sap-ui-core.js"
+        data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates" data-sap-ui-compatVersion="edge"
+        data-sap-ui-theme="sap_horizon" data-sap-ui-frameOptions="allow" data-sap-ui-bindingSyntax="complex"></script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt('content');
+        });
+    </script>
+</head>
+
+<body class="sapUiBody" id="content"></body>
+
+</html>

@@ -1,0 +1,27 @@
+{
+  "generationParameters": {
+    "generationDate": "Wed Jun 24 2026 10:41:07 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/ResourceAllocationService/",
+    "appName": "resourceallocation",
+    "appTitle": "Resource Allocation",
+    "appDescription": "App for splitting project tasks among employees.",
+    "appNamespace": "com.company.project",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.149.0",
+    "enableEslint": true,
+    "showMockDataInfo": false,
+    "generatorVersion": "1.27.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "Allocations"
+      }
+    ],
+    "launchText": "To launch the generated app, start your CAP project:  (```mvn spring-boot:run```) and navigate to the following location in your browser:\n\nhttp://localhost:8080/resourceallocation/webapp/index.html"
+  }
+}

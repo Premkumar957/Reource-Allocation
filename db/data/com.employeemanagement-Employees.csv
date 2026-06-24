@@ -1,0 +1,4 @@
+ID,employeeId,employeeName,department,designation,createdAt,createdBy,modifiedAt,modifiedBy
+6f7b7c9a-1f2a-4d7c-a111-111111111111,EMP001,Rahul Sharma,Engineering,Software Engineer
+7a8c8d9e-2b3c-4d8e-b222-222222222222,EMP002,Priya Nair,Engineering,Senior Developer
+8b9d9eaf-3c4d-4e9f-c333-333333333333,EMP003,Amit Verma,Testing,QA Engineer

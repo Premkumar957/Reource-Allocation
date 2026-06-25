@@ -104,6 +104,21 @@ annotate service.Allocations with @(
             Label : 'Status',
             Value : status,
         },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ResourceAllocationService.submit',
+            Label : 'Submit'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ResourceAllocationService.approve',
+            Label : 'Approve'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ResourceAllocationService.reject',
+            Label : 'Reject'
+        }
     ],
     UI.HeaderInfo : {
         Title : {

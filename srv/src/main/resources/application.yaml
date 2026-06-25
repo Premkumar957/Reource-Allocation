@@ -5,3 +5,38 @@ spring:
   sql.init.platform: h2
 cds:
   data-source.auto-config.enabled: false
+  security:
+    mock:
+      users:
+        - name: Premkumar
+          password: Premkumar@97
+          roles:
+            - Admin
+          additional:
+            firstName: Premkumar
+            lastName: S
+            email: prem@inflexiontechfze.com
+        - name: Dhanush
+          password: Dhanush@123
+          roles:
+            - ProjectManager
+          additional:
+            firstName: Dhanush
+            lastName: M
+            email: dhanush@inflexiontechfze.com
+        - name: Sanjay
+          password: Sanjay@143
+          roles:
+            - Employee
+          additional:
+            firstName: Sanjay
+            lastName: Kumar
+            email: sanjay@inflexiontechfze.com
+        - name: Pugazh
+          password: Pugazh@321
+          roles:
+            - HRManager
+          additional:
+            firstName: Pugazh
+            lastName: K
+            email: pugazh@inflexiontechfze.com

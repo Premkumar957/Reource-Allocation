@@ -5,18 +5,23 @@ annotate service.Allocations with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : employee.employeeId,
+                Value : employee_ID,
                 Label : 'Employee Id',
             },
             {
                 $Type : 'UI.DataField',
-                Value : employee.employeeName,
+                Value : employeeFullName,
                 Label : 'Employee Name',
             },
             {
                 $Type : 'UI.DataField',
-                Value : project.projectName,
-                Label : 'Project Name',
+                Value : project_ID,
+                Label : 'Project Id',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : projectTitle,
+                Label : 'Project Title',
             },
             {
                 $Type : 'UI.DataField',
@@ -56,18 +61,23 @@ annotate service.Allocations with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Value : employee.employeeId,
+            Value : employee_ID,
             Label : 'Employee Id',
         },
         {
             $Type : 'UI.DataField',
-            Value : employee.employeeName,
+            Value : employeeFullName,
             Label : 'Employee Name',
         },
         {
             $Type : 'UI.DataField',
-            Value : project.projectName,
-            Label : 'Project Name',
+            Value : project_ID,
+            Label : 'Project Id',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : projectTitle,
+            Label : 'Project Title',
         },
         {
             $Type : 'UI.DataFieldForAnnotation',
@@ -110,89 +120,89 @@ annotate service.Allocations with @(
     },
 );
 
-annotate service.Allocations with {
-    employee @Common.ValueList : {
-        $Type : 'Common.ValueListType',
-        CollectionPath : 'Employees',
-        Parameters : [
-            {
-                $Type : 'Common.ValueListParameterInOut',
-                LocalDataProperty : employee_ID,
-                ValueListProperty : 'ID',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'employeeId',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'employeeName',
-            },
-        ],
-    }
-};
 
 annotate service.Allocations with {
-    project @Common.ValueList : {
-        $Type : 'Common.ValueListType',
-        CollectionPath : 'Projects',
-        Parameters : [
-            {
-                $Type : 'Common.ValueListParameterInOut',
-                LocalDataProperty : project_ID,
-                ValueListProperty : 'ID',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'projectCode',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'projectName',
-            },
-        ],
-    }
-};
-
-annotate service.Employees with {
-    employeeId @(
+    employee @(
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Employees',
             Parameters : [
                 {
                     $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : employeeId,
+                    LocalDataProperty : employee_ID,
+                    ValueListProperty : 'ID',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty : 'employeeId',
+                },
+                {
+                    $Type : 'Common.ValueListParameterOut',
+                    LocalDataProperty : employeeFullName,
+                    ValueListProperty : 'employeeName',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'department',
                 },
             ],
         },
-        Common.ValueListWithFixedValues : false
-)};
+        Common.ValueListWithFixedValues : false,
+    )
+};
 
-annotate service.Projects with {
-    projectName @(
+annotate service.Employees with {
+    ID @(
+        UI.Hidden : true
+    );
+};
+
+annotate service.Allocations with {
+    employee @(
+        Common.Text : employee.employeeId,
+        Common.TextArrangement : #TextOnly
+    );
+};
+
+
+annotate service.Allocations with {
+    project @(
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Projects',
             Parameters : [
                 {
                     $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : projectName,
+                    LocalDataProperty : project_ID,
+                    ValueListProperty : 'ID',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty : 'projectCode',
                 },
+                {
+                    $Type : 'Common.ValueListParameterOut',
+                    LocalDataProperty : projectTitle,
+                    ValueListProperty : 'projectName',
+                }
             ],
         },
         Common.ValueListWithFixedValues : false,
 )};
 
 annotate service.Projects with {
-    projectCode @(
-        Common.Text : projectName,
-        Common.Text.@UI.TextArrangement : #TextSeparate,
-)};
+    ID @(
+        UI.Hidden : true
+    );
+};
 
 
+annotate  service.Allocations with {
+    project @(
+        Common.Text : project.projectCode,
+        Common.TextArrangement : #TextOnly
+    );
+};
 
 
 

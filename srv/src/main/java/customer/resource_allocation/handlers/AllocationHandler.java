@@ -2,6 +2,7 @@ package customer.resource_allocation.handlers;
 
 import com.sap.cds.services.EventContext;              // ✅ correct import
 import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
@@ -10,9 +11,11 @@ import com.sap.cds.services.cds.CdsReadEventContext;
 import com.sap.cds.services.cds.CdsUpdateEventContext;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
 import com.sap.cds.services.persistence.PersistenceService;
+import com.sap.cds.ql.CQL;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
+import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.ql.cqn.CqnStatement;
 import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.ErrorStatuses;
@@ -32,8 +35,15 @@ import cds.gen.resourceallocationservice.AllocationsSubmitContext;
 import cds.gen.resourceallocationservice.AllocationsApproveContext;
 import cds.gen.resourceallocationservice.AllocationsRejectContext;
 
+import com.sap.cds.ql.CQL;
+import com.sap.cds.ql.Predicate;
+import com.sap.cds.ql.cqn.CqnPredicate;
+import com.sap.cds.ql.cqn.CqnSelect;
+
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @ServiceName(ResourceAllocationService_.CDS_NAME)
@@ -66,18 +76,18 @@ public class AllocationHandler implements EventHandler {
     //  PROJECTS — READ
     // ════════════════════════════════════════════════════════════
 
-    @Before(event = CqnService.EVENT_READ, entity = Projects_.CDS_NAME)
+    // @Before(event = CqnService.EVENT_READ, entity = Projects_.CDS_NAME)
     public void restrictProjectRead(CdsReadEventContext context) {
-        boolean isAdmin     = userInfo.hasRole("Admin");
-        boolean isHRManager = userInfo.hasRole("HRManager");
+        // boolean isAdmin     = userInfo.hasRole("Admin");
+        // boolean isHRManager = userInfo.hasRole("HRManager");
 
-        if (!isAdmin && !isHRManager) {
-            String currentUser = userInfo.getName();
-            context.setCqn(
-                Select.from(Projects_.class)
-                      .where(p -> p.get("projectManagerName").eq(currentUser))
-            );
-        }
+        // if (!isAdmin && !isHRManager) {
+        //     String currentUser = userInfo.getName();
+        //     context.setCqn(
+        //         Select.from(Projects_.class)
+        //               .where(p -> p.get("createdBy").eq(currentUser))
+        //     );
+        // }
     }
 
     // ════════════════════════════════════════════════════════════
@@ -98,7 +108,7 @@ public class AllocationHandler implements EventHandler {
             db.run(Select.from(Projects_.class).where(p -> p.ID().eq(id)))
               .first(Projects.class)
               .ifPresent(project -> {
-                  Object manager = project.get("projectManagerName");
+                  Object manager = project.get("createdBy");
                   if (manager == null || !currentUser.equals(manager.toString())) {
                       throw new ServiceException(ErrorStatuses.FORBIDDEN,
                           "ProjectManager can only update their own projects.");
@@ -123,7 +133,7 @@ public class AllocationHandler implements EventHandler {
     //  ALLOCATIONS — READ
     // ════════════════════════════════════════════════════════════
 
-    @Before(event = CqnService.EVENT_READ, entity = Allocations_.CDS_NAME)
+    // @Before(event = CqnService.EVENT_READ, entity = Allocations_.CDS_NAME)
     public void restrictAllocationRead(CdsReadEventContext context) {
         boolean isAdmin          = userInfo.hasRole("Admin");
         boolean isHRManager      = userInfo.hasRole("HRManager");
@@ -134,19 +144,21 @@ public class AllocationHandler implements EventHandler {
             return;
         }
 
-        if (isProjectManager) {
-            context.setCqn(
-                Select.from(Allocations_.class)
-                      .where(a -> a.get("project.projectManagerName").eq(currentUser))
-            );
-            return;
-        }
+        Predicate filter = isProjectManager
+            ? CQL.get("project.createdBy").eq(currentUser)  // ProjectManager
+            : CQL.get("employee.email").eq(currentUser);     // Employee
 
-        // Employee — own allocations only
-        context.setCqn(
-            Select.from(Allocations_.class)
-                  .where(a -> a.get("employee.employeeName").eq(currentUser))
-        );
+        CqnSelect original = context.getCqn();
+
+        CqnSelect secured = original.where().isPresent()
+            ? Select.from(original.ref())
+                    .columns(original.items())
+                    .where(CQL.and(original.where().get(), filter))
+            : Select.from(original.ref())
+                    .columns(original.items())
+                    .where(filter);
+
+        context.setCqn(secured);
     }
 
     // ════════════════════════════════════════════════════════════
@@ -227,6 +239,9 @@ public class AllocationHandler implements EventHandler {
 
     @On(event = "submit", entity = Allocations_.CDS_NAME)
     public void onSubmit(AllocationsSubmitContext context) {
+        System.out.println("User : " + userInfo.getName());
+        System.out.println("Is PM: " + userInfo.hasRole("ProjectManager"));
+        System.out.println("Roles: " + userInfo.getRoles());
         if (!userInfo.hasRole("Admin") && !userInfo.hasRole("ProjectManager")) {
             throw new ServiceException(ErrorStatuses.FORBIDDEN,
                 "Only Admin or ProjectManager can submit Allocations.");
@@ -241,6 +256,7 @@ public class AllocationHandler implements EventHandler {
             .data("status", "PENDING")
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
+        context.getMessages().success("Allocation submitted successfully.").transition(true);
         context.setCompleted();
     }
 
@@ -260,6 +276,7 @@ public class AllocationHandler implements EventHandler {
             .data("status", "APPROVED")
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
+        context.getMessages().success("Allocation approved successfully.").transition(true);
         context.setCompleted();
     }
 
@@ -279,6 +296,7 @@ public class AllocationHandler implements EventHandler {
             .data("status", "REJECTED")
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
+        context.getMessages().success("Allocation rejected successfully.").transition(true);
         context.setCompleted();
     }
 
@@ -301,4 +319,47 @@ public class AllocationHandler implements EventHandler {
             .orElseThrow(() -> new ServiceException(
                 ErrorStatuses.NOT_FOUND, "Allocation not found."));
     }
+
+    // ──  #1 — Filter projects for Employee ───────────────
+    @Before(event = CqnService.EVENT_READ, entity = Projects_.CDS_NAME)
+    public void filterProjectsForEmployee(List<Projects> projects) {
+        System.out.println("Become the programmer you are meant to be!");
+        if (!userInfo.hasRole("Employee")) return;
+        if (projects == null || projects.isEmpty()) {
+            return;
+        }
+
+        String currentUser = userInfo.getName();
+
+        List<String> allocatedIds = db.run(
+            Select.from(Allocations_.class)
+                .columns(a -> a.project_ID())
+                .where(a -> a.get("employee.email").eq(currentUser))
+        )
+        .stream()
+        .map(row -> (String) row.get(Allocations.PROJECT_ID))
+        .filter(id -> id != null)
+        .collect(Collectors.toList());
+
+        projects.removeIf(p -> !allocatedIds.contains(p.getId()));
+        
+        for (Projects project : projects) {
+            System.out.println("User " + currentUser + " can see: " + project.getProjectName());
+        }
+    }
+
+
+    @After(event = CqnService.EVENT_READ, entity = Allocations_.CDS_NAME)
+    public void setActionAvailability(List<Allocations> allocations) {
+
+        for (Allocations allocation : allocations) {
+
+            allocation.setCanSubmit("DRAFT".equals(allocation.getStatus()));
+            allocation.setCanApprove("PENDING".equals(allocation.getStatus()));
+            allocation.setCanReject("PENDING".equals(allocation.getStatus()));
+        }
+    }
+
+    
+
 }

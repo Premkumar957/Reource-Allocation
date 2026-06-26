@@ -19,4 +19,8 @@ entity Allocations : cuid, managed {
     endDate           : Date;
 
     status            : String(20) default 'DRAFT';
+
+    virtual canSubmit         : Boolean;
+    virtual canApprove        : Boolean;
+    virtual canReject         : Boolean;
 }

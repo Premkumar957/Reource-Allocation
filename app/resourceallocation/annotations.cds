@@ -15,6 +15,11 @@ annotate service.Allocations with @(
             },
             {
                 $Type : 'UI.DataField',
+                Label : 'Role',
+                Value : employeeRole,
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : project_ID,
                 Label : 'Project Id',
             },
@@ -27,11 +32,6 @@ annotate service.Allocations with @(
                 $Type : 'UI.DataField',
                 Value : allocationPercent,
                 Label : 'Allocation Percentage',
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'Role',
-                Value : role,
             },
             {
                 $Type : 'UI.DataField',
@@ -87,17 +87,7 @@ annotate service.Allocations with @(
         {
             $Type : 'UI.DataField',
             Label : 'Role',
-            Value : role,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'Start Date',
-            Value : startDate,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'End Date',
-            Value : endDate,
+            Value : employeeRole,
         },
         {
             $Type : 'UI.DataField',
@@ -160,6 +150,11 @@ annotate service.Allocations with {
                     $Type : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty : 'department',
                 },
+                {
+                    $Type : 'Common.ValueListParameterOut',
+                    LocalDataProperty : employeeRole,
+                    ValueListProperty : 'designation',
+                }
             ],
         },
         Common.ValueListWithFixedValues : false,
@@ -219,5 +214,14 @@ annotate  service.Allocations with {
     );
 };
 
+annotate service.Allocations actions {
+
+    submit @Core.OperationAvailable : canSubmit;
+
+    approve @Core.OperationAvailable : canApprove;
+
+    reject @Core.OperationAvailable : canReject;
+
+};
 
 

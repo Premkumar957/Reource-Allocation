@@ -8,7 +8,7 @@ cds:
   security:
     mock:
       users:
-        - name: Premkumar
+        - name: prem@inflexiontechfze.com
           password: Premkumar@97
           roles:
             - Admin
@@ -16,7 +16,7 @@ cds:
             firstName: Premkumar
             lastName: S
             email: prem@inflexiontechfze.com
-        - name: Dhanush
+        - name: dhanush@inflexiontechfze.com
           password: Dhanush@123
           roles:
             - ProjectManager
@@ -24,7 +24,7 @@ cds:
             firstName: Dhanush
             lastName: M
             email: dhanush@inflexiontechfze.com
-        - name: Sanjay
+        - name: sanjay@inflexiontechfze.com
           password: Sanjay@143
           roles:
             - Employee
@@ -32,7 +32,7 @@ cds:
             firstName: Sanjay
             lastName: Kumar
             email: sanjay@inflexiontechfze.com
-        - name: Pugazh
+        - name: pugazh@inflexiontechfze.com
           password: Pugazh@321
           roles:
             - HRManager

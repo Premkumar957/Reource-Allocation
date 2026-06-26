@@ -12,6 +12,7 @@ entity Employees : cuid, managed {
 
     department   : String(50);
     designation  : String(50);
+    email        : String(50);
 
     skills       : Composition of many EmployeeSkills on skills.employee = $self;
 

@@ -49,7 +49,8 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.templates": {}
+        "sap.fe.templates": {},
+        "sap.f": {}
       }
     },
     "contentDensities": {
@@ -81,17 +82,28 @@
       "css": []
     },
     "routing": {
-      "config": {},
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
       "routes": [
         {
           "pattern": ":?query:",
           "name": "ProjectsList",
-          "target": "ProjectsList"
+          "target": [
+            "ProjectsList"
+          ]
         },
         {
           "pattern": "Projects({key}):?query:",
           "name": "ProjectsObjectPage",
-          "target": "ProjectsObjectPage"
+          "target": [
+            "ProjectsList",
+            "ProjectsObjectPage"
+          ]
         }
       ],
       "targets": {
@@ -119,7 +131,9 @@
               },
               "initialLoad": "Enabled"
             }
-          }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": ""
         },
         "ProjectsObjectPage": {
           "type": "Component",
@@ -130,9 +144,17 @@
               "editableHeaderContent": false,
               "contextPath": "/Projects"
             }
-          }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/Projects({key})"
         }
       }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
     }
   },
   "sap.fiori": {

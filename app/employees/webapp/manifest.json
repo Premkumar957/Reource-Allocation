@@ -119,6 +119,26 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "import": {
+                      "press": "com.company.project.employees.ext.controller.EmployeesUpload.upload",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Upload"
+                    },
+                    "template": {
+                      "press": "com.company.project.employees.ext.controller.ExcelTemplate.downloadTemplate",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Template",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "import"
+                      }
+                    }
                   }
                 }
               },
@@ -145,6 +165,16 @@
                 "skills/@com.sap.vocabularies.UI.v1.LineItem#Skills": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "columns": {
+                    "SkillName": {
+                      "header": "Skill Name",
+                      "position": {
+                        "anchor": "DataField::skill_ID",
+                        "placement": "After"
+                      },
+                      "template": "com.company.project.employees.ext.fragment.SkillName"
+                    }
                   }
                 }
               }
@@ -158,7 +188,21 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/Employees/skills"
+              "contextPath": "/Employees/skills",
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation": {
+                  "fields": {
+                    "SkillName": {
+                      "template": "com.company.project.employees.ext.fragment.SkillName",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::skill_ID"
+                      },
+                      "label": "Skill Name"
+                    }
+                  }
+                }
+              }
             }
           }
         }

@@ -115,8 +115,8 @@ annotate service.Allocations with @(
             $Type : 'UI.DataField',
             Value : employee.employeeName,
         },
-        TypeName : '',
-        TypeNamePlural : '',
+        TypeName : 'Resource Allocation',
+        TypeNamePlural : 'Resource Allocations',
     },
     UI.DataPoint #allocationPercent : {
         Value : allocationPercent,

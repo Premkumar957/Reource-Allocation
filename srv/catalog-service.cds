@@ -14,6 +14,10 @@ service ResourceAllocationService {
     entity Employees
             as projection on bc.Employees;
 
+            
+    @requires: ['Admin', 'HRManager']
+    action uploadEmployeeData(file : LargeBinary);
+
     @restrict: [
         { grant: '*',    to: 'Admin'          },
         { grant: '*',    to: 'HRManager'      },

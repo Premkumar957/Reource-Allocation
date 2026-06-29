@@ -8,10 +8,12 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.cds.CdsReadEventContext;
+import com.sap.cds.services.cds.CdsCreateEventContext;
 import com.sap.cds.services.cds.CdsUpdateEventContext;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
 import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.ql.CQL;
+import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
@@ -22,25 +24,34 @@ import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.request.UserInfo;
 
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cds.gen.resourceallocationservice.Allocations;
 import cds.gen.resourceallocationservice.Allocations_;
+import cds.gen.resourceallocationservice.Employees;
 import cds.gen.resourceallocationservice.Employees_;
 import cds.gen.resourceallocationservice.Projects;
 import cds.gen.resourceallocationservice.Projects_;
 import cds.gen.resourceallocationservice.ResourceAllocationService_;
+import cds.gen.resourceallocationservice.UploadEmployeeDataContext;
 import cds.gen.resourceallocationservice.AllocationsSubmitContext;
 import cds.gen.resourceallocationservice.AllocationsApproveContext;
 import cds.gen.resourceallocationservice.AllocationsRejectContext;
 
-import com.sap.cds.ql.CQL;
-import com.sap.cds.ql.Predicate;
-import com.sap.cds.ql.cqn.CqnPredicate;
-import com.sap.cds.ql.cqn.CqnSelect;
 
+import com.sap.cds.ql.Predicate;
+
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,6 +68,9 @@ public class AllocationHandler implements EventHandler {
 
     @Autowired
     private UserInfo userInfo;
+
+    @Autowired
+    private EmailService emailService;
 
     // ════════════════════════════════════════════════════════════
     //  EMPLOYEES
@@ -257,7 +271,30 @@ public class AllocationHandler implements EventHandler {
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
         context.getMessages().success("Allocation submitted successfully.").transition(true);
+
+        String projectName = alloc.getProjectTitle();
+        String employeeName = alloc.getEmployeeFullName();
+        emailService.sendEmail(
+            "massprem1438124@gmail.com",
+            "New Allocation Request",
+            """
+            Dear HR,
+
+            A new allocation request has been submitted.
+
+            Project : %s
+            Employee: %s
+            Status  : Pending Approval
+
+            Please review the request.
+
+            Regards,
+            Resource Allocation System
+            """.formatted(projectName, employeeName)
+        );
+
         context.setCompleted();
+
     }
 
     @On(event = "approve", entity = Allocations_.CDS_NAME)
@@ -277,6 +314,25 @@ public class AllocationHandler implements EventHandler {
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
         context.getMessages().success("Allocation approved successfully.").transition(true);
+        
+        String projectName = alloc.getProjectTitle();
+        String employeeName = alloc.getEmployeeFullName();
+        emailService.sendEmail(
+            "kavi878787@gmail.com",
+            "Allocation Approved",
+            """
+            Dear Project Manager,
+
+            Your allocation request has been approved.
+
+            Project : %s
+            Employee: %s
+
+            Regards,
+            HR Team
+            """.formatted(projectName, employeeName)
+        );
+
         context.setCompleted();
     }
 
@@ -297,6 +353,27 @@ public class AllocationHandler implements EventHandler {
             .where(a -> a.ID().eq(id)));
         context.put("value", getAllocationById(id));
         context.getMessages().success("Allocation rejected successfully.").transition(true);
+        
+        String projectName = alloc.getProjectTitle();
+        String employeeName = alloc.getEmployeeFullName();
+        emailService.sendEmail(
+            "kavi878787@gmail.com",
+            "Allocation Rejected",
+            """
+            Dear Project Manager,
+
+            Your allocation request has been rejected.
+
+            Project : %s
+            Employee: %s
+
+            Please review and resubmit if necessary.
+
+            Regards,
+            HR Team
+            """.formatted(projectName, employeeName)
+        );
+
         context.setCompleted();
     }
 
@@ -357,6 +434,92 @@ public class AllocationHandler implements EventHandler {
             allocation.setCanSubmit("DRAFT".equals(allocation.getStatus()));
             allocation.setCanApprove("PENDING".equals(allocation.getStatus()));
             allocation.setCanReject("PENDING".equals(allocation.getStatus()));
+        }
+    }
+
+    @Before(event = CqnService.EVENT_CREATE, entity = Projects_.CDS_NAME)
+    public void validateProjectValidation(Projects context) {
+        
+
+        LocalDate startDate = context.getStartDate();
+        LocalDate endDate = context.getEndDate();
+
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new ServiceException(ErrorStatuses.BAD_REQUEST,
+                "Project start date cannot be after end date.");
+        }
+    }
+
+
+    @On(event = "uploadEmployeeData")
+    public void uploadEmployeeData(UploadEmployeeDataContext context) {
+        System.out.println("uploadEmployeeData called");
+
+        byte[] file = context.getFile();
+
+        System.out.println(file == null ? "File is NULL" : "File size = " + file.length);
+
+        if (file == null || file.length == 0) {
+            throw new ServiceException(
+                    ErrorStatuses.BAD_REQUEST,
+                    "Uploaded file is empty.");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(file))) {
+
+            Sheet sheet = workbook.getSheet("Employees");
+
+            if (sheet == null) {
+                throw new ServiceException(
+                        ErrorStatuses.BAD_REQUEST,
+                        "Employees sheet not found.");
+            }
+
+            DataFormatter formatter = new DataFormatter();
+
+            // Skip Header Row
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+                Row row = sheet.getRow(i);
+
+                if (row == null) {
+                    continue;
+                }
+
+                String employeeId = formatter.formatCellValue(row.getCell(0)).trim();
+                String employeeName = formatter.formatCellValue(row.getCell(1)).trim();
+                String email = formatter.formatCellValue(row.getCell(2)).trim();
+                String department = formatter.formatCellValue(row.getCell(3)).trim();
+                String designation = formatter.formatCellValue(row.getCell(4)).trim();
+                
+
+                if (employeeId.isBlank()) {
+                    continue;
+                }
+
+                Employees employee = Employees.create();
+
+                employee.setEmployeeId(employeeId);
+                employee.setEmployeeName(employeeName);
+                employee.setEmail(email);
+                employee.setDepartment(department);
+                employee.setDesignation(designation);
+                
+
+                db.run(
+                    Insert.into(Employees_.class)
+                        .entry(employee)
+                );
+            }
+
+            context.getMessages().success("Employees uploaded successfully.");
+
+            context.setCompleted();
+
+        } catch (IOException e) {
+            throw new ServiceException(
+                    ErrorStatuses.BAD_REQUEST,
+                    "Invalid Excel file.");
         }
     }
 

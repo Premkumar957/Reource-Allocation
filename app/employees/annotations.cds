@@ -15,6 +15,11 @@ annotate service.Employees with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : email,
+                Label : 'Email',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : 'Department',
                 Value : department,
             },
@@ -66,8 +71,8 @@ annotate service.Employees with @(
             $Type : 'UI.DataField',
             Value : employeeId,
         },
-        TypeName : '',
-        TypeNamePlural : '',
+        TypeName : 'Employee',
+        TypeNamePlural : 'Employees',
         Description : {
             $Type : 'UI.DataField',
             Value : employeeName,
@@ -79,13 +84,8 @@ annotate service.EmployeeSkills with @(
     UI.LineItem #Skills : [
         {
             $Type : 'UI.DataField',
-            Value : skill.skillCode,
+            Value : skill_ID,
             Label : 'Skill Code',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : skill.skillName,
-            Label : 'Skill Name',
         },
     ],
     UI.Facets : [
@@ -101,13 +101,14 @@ annotate service.EmployeeSkills with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : skill.skillCode,
-                Label : 'Skill Code',
+                Value : employee_ID,
+                Label : 'Employee',
+                @UI.Hidden,
             },
             {
                 $Type : 'UI.DataField',
-                Value : skill.skillName,
-                Label : 'Skill Name',
+                Value : skill_ID,
+                Label : 'Skill Code',
             },
         ],
     },
@@ -116,8 +117,48 @@ annotate service.EmployeeSkills with @(
             $Type : 'UI.DataField',
             Value : skill.skillCode,
         },
-        TypeName : '',
-        TypeNamePlural : '',
+        TypeName : 'Employee Skill',
+        TypeNamePlural : 'Employee Skills',
     },
 );
+
+annotate service.EmployeeSkills with {
+    skill @(
+        Common.ValueList : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'Skills',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : skill_ID,
+                    ValueListProperty : 'ID',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'skillCode',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'skillName',
+                }
+            ],
+        },
+        Common.ValueListWithFixedValues : false,
+)};
+
+
+annotate service.Skills with {
+    ID @(
+        UI.Hidden : true
+    );
+};
+
+annotate  service.EmployeeSkills with {
+    skill @(
+        Common.Text : skill.skillCode,
+        Common.TextArrangement : #TextOnly
+    );
+};
+
+
 

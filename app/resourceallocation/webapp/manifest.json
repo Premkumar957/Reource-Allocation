@@ -114,6 +114,19 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "exportPdf": {
+                      "press": "com.company.project.resourceallocation.ext.controller.ExportPdf.exportPdf",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Export PDF",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "DataFieldForAction::ResourceAllocationService.submit"
+                      }
+                    }
                   }
                 }
               },

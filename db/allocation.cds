@@ -13,6 +13,7 @@ entity Allocations : cuid, managed {
 
     role              : String(50);
 
+    @assert.range: [1, 100]
     allocationPercent : Decimal(5,2);
 
     startDate         : Date;

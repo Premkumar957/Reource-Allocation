@@ -77,6 +77,10 @@ annotate service.Projects with @(
         },
         TypeName : 'Project',
         TypeNamePlural : 'Projects',
+        Description : {
+            $Type : 'UI.DataField',
+            Value : projectName,
+        },
     },
 );
 

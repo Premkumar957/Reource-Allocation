@@ -18,6 +18,8 @@ service ResourceAllocationService {
     @requires: ['Admin', 'HRManager']
     action uploadEmployeeData(file : LargeBinary);
 
+    action exportAllocationPdf() returns LargeBinary;
+
     @restrict: [
         { grant: '*',    to: 'Admin'          },
         { grant: '*',    to: 'HRManager'      },

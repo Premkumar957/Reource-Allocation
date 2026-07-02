@@ -5,6 +5,11 @@ annotate service.Employees with @(
         Data : [
             {
                 $Type : 'UI.DataField',
+                Value : imageUrl,
+                Label : 'Employee Photo',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : 'Employee Id',
                 Value : employeeId,
             },
@@ -27,6 +32,12 @@ annotate service.Employees with @(
                 $Type : 'UI.DataField',
                 Label : 'Designation',
                 Value : designation,
+            },
+            {
+                $Type : 'UI.DataFieldForAnnotation',
+                Target : '@UI.DataPoint#Rating',
+                Label : 'Rating',
+                ![@UI.PartOfPreview]: false
             },
         ],
     },
@@ -64,6 +75,17 @@ annotate service.Employees with @(
             $Type : 'UI.DataField',
             Label : 'Designation',
             Value : designation,
+        },
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : '@UI.DataPoint#Rating',
+            Label : 'Rating',
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ResourceAllocationService.approveEmployee',
+            Label : 'approveEmployee',
+            Inline : true,
         },
     ],
     UI.HeaderInfo : {
@@ -159,6 +181,17 @@ annotate  service.EmployeeSkills with {
         Common.TextArrangement : #TextOnly
     );
 };
+
+
+annotate service.Employees with @(UI:{
+    DataPoint #Rating : {
+        $Type : 'UI.DataPointType',
+        Title : 'Rating',
+        Value : rating,
+        TargetValue : 5,
+        Visualization : #Rating,
+    }
+});
 
 
 

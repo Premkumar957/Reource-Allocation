@@ -10,9 +10,13 @@ service ResourceAllocationService {
         { grant: 'READ', to: 'ProjectManager' },
         { grant: 'READ', to: 'Employee'       }
     ]
+
     @odata.draft.enabled
     entity Employees
-            as projection on bc.Employees;
+            as projection on bc.Employees 
+                actions {
+                    action approveEmployee() returns String;
+                };
 
             
     @requires: ['Admin', 'HRManager']
@@ -85,6 +89,14 @@ service ResourceAllocationService {
     ]
     entity Skills
             as projection on bc.Skills;
+
 }
 
+annotate ResourceAllocationService.Employees with {
+    employeeName @assert: (case
+        when length(employeeName) < 3 then 'Employee Name must be at least 3 characters long'
+        when length(employeeName) > 100 then 'Employee Name cannot exceed 100 characters'
+        else null
+    end);
+}
 

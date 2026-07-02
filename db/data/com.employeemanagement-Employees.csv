@@ -1,7 +1,8 @@
-ID,employeeId,employeeName,department,designation,email,createdAt,createdBy,modifiedAt,modifiedBy
-6f7b7c9a-1f2a-4d7c-a111-111111111111,EMP001,Sanjay,Engineering,Software Engineer,sanjay@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
-7a8c8d9e-2b3c-4d8e-b222-222222222222,EMP002,Priya Nair,Engineering,Senior Developer,priya@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
-8b9d9eaf-3c4d-4e9f-c333-333333333333,EMP003,Amit Verma,Testing,QA Engineer,amit@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com
-8b9d9eaf-3c4d-4e9f-c333-444444444444,EMP004,Dhanush,Development,Project Manager,dhanush@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
-8b9d9eaf-3c4d-4e9f-c333-555555555555,EMP005,Pugazh,Human Resource,HR Manager,pugazh@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com
-8b9d9eaf-3c4d-4e9f-c333-666666666666,EMP006,Premkumar,System Administration,Admin,prem@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
+ID,employeeId,employeeName,department,designation,email,rating,imageUrl,createdAt,createdBy,modifiedAt,modifiedBy
+6f7b7c9a-1f2a-4d7c-a111-111111111111,EMP001,Sanjay,Engineering,Software Engineer,sanjay@inflexiontechfze.com,2,https://randomuser.me/api/portraits/men/1.jpg,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
+7a8c8d9e-2b3c-4d8e-b222-222222222222,EMP002,Priya Nair,Engineering,Senior Developer,priya@inflexiontechfze.com,1,https://randomuser.me/api/portraits/women/1.jpg,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
+8b9d9eaf-3c4d-4e9f-c333-333333333333,EMP003,Amit Verma,Testing,QA Engineer,amit@inflexiontechfze.com,5,https://randomuser.me/api/portraits/men/2.jpg,2026-06-25T11:00:00Z,prem@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com
+8b9d9eaf-3c4d-4e9f-c333-444444444444,EMP004,Dhanush,Development,Project Manager,dhanush@inflexiontechfze.com,3,https://randomuser.me/api/portraits/men/3.jpg,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
+8b9d9eaf-3c4d-4e9f-c333-555555555555,EMP005,Pugazh,Human Resource,HR Manager,pugazh@inflexiontechfze.com,4,https://randomuser.me/api/portraits/men/4.jpg,2026-06-25T11:00:00Z,prem@inflexiontechfze.com,2026-06-25T10:30:00Z,prem@inflexiontechfze.com
+8b9d9eaf-3c4d-4e9f-c333-666666666666,EMP006,Premkumar,System Administration,Admin,prem@inflexiontechfze.com,5,https://randomuser.me/api/portraits/men/5.jpg,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com
+8b9d9eaf-3c4d-4e9f-c333-777777777777,EMP007,Priya,Technician,Software Technician,priya@inflexiontechfze.com,3,https://randomuser.me/api/portraits/women/3.jpg,2026-06-25T10:30:00Z,prem@inflexiontechfze.com,2026-06-25T11:00:00Z,prem@inflexiontechfze.com

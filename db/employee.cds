@@ -14,6 +14,11 @@ entity Employees : cuid, managed {
     designation  : String(50);
     email        : String(50);
 
+    @assert.range: [1, 5]
+    rating      : Integer;
+
+    imageUrl    : String(500) @(UI: {IsImageURL: true});
+
     skills       : Composition of many EmployeeSkills on skills.employee = $self;
 
 }
